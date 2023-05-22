@@ -1,5 +1,6 @@
 import glob
 import logging
+from ephem import *
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 from random import randint
 import settings
@@ -48,8 +49,16 @@ def send_cat_picture(update, context):
     chat_id = update.effective_chat.id
     context.bot.send_photo(chat_id=chat_id, photo=open(cat_photo_filename, 'rb'))
 
+
 def our_planet(update, context):
-    pass
+    planets = ['Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune', 'Pluto', 'Sun', 'Moon']
+    print(context.args)
+
+
+
+
+
+
 
 
 
