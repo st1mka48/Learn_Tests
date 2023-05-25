@@ -1,6 +1,7 @@
-import glob
+from random import choice
 import logging
-from ephem import *
+import glob
+import ephem
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 from random import randint
 import settings
@@ -44,22 +45,14 @@ def guess_number(update, context):
 
 
 def send_cat_picture(update, context):
-    cat_photo_list = glob('images/cat*.jpg')
+    cat_photo_list = glob.glob('images/cat*.jpeg')
     cat_pic_filename = choice(cat_photo_list)
     chat_id = update.effective_chat.id
-    context.bot.send_photo(chat_id=chat_id, photo=open(cat_photo_filename, 'rb'))
+    context.bot.send_photo(chat_id=chat_id, photo=open(cat_pic_filename, 'rb'))
 
 
-def our_planet(update, context):
-    planets = ['Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune', 'Pluto', 'Sun', 'Moon']
-    print(context.args)
-
-
-
-
-
-
-
+def planet_info(update, context):
+    pass
 
 
 def main():
@@ -69,7 +62,7 @@ def main():
     dp.add_handler(CommandHandler('start', greet_user))
     dp.add_handler(CommandHandler('guess', guess_number))
     dp.add_handler(CommandHandler('cat', send_cat_picture))
-    dp.add_handler(CommandHandler('planet', our_planet))
+    dp.add_handler(CommandHandler("planet", planet_info))
     dp.add_handler(MessageHandler(Filters.text, talk_to_me))
 
     logging.info('bot start!')
