@@ -1,23 +1,38 @@
 from random import choice
+from telegram import ReplyKeyboardMarkup
 import logging
 import glob
 import ephem
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 from random import randint
 import settings
+from emoji import emojize
 
 logging.basicConfig(filename="bot.log", level=logging.INFO)
 
 
 def greet_user(update, context):
     print('Вызван /start')
-    update.message.reply_text('Привет!')
+    context.user_data['emoji'] = get_smile(context.user_data)
+    my_keyboard = ReplyKeyboardMarkup([['Прислать котика']])
+    update.message.reply_text(
+        f'Приветствую, пользователь {context.user_data["emoji"]}',
+        reply_markup=my_keyboard
+    )
 
 
 def talk_to_me(update, context):
+    context.user_data['emoji'] = get_smile(context.user_data)
     text = update.message.text
     print(text)
-    update.message.reply_text(text)
+    update.message.reply_text(f"{text} {context.user_data['emoji']}")
+
+
+def get_smile(user_data):
+    if 'emoji' not in user_data:
+        smile = choice(settings.USER_EMOJI)
+        return emojize(smile)
+    return user_data['emoji']
 
 
 def play_random(user_number):
@@ -63,6 +78,7 @@ def main():
     dp.add_handler(CommandHandler('guess', guess_number))
     dp.add_handler(CommandHandler('cat', send_cat_picture))
     dp.add_handler(CommandHandler('planet', planet_info))
+    dp.add_handler(MessageHandler(Filters.regex('^(Прислать котика)$'), send_cat_picture))
     dp.add_handler(MessageHandler(Filters.text, talk_to_me))
 
     logging.info('bot start!')
